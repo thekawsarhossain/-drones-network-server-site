@@ -29,6 +29,13 @@ async function run() {
             res.json(result)
         })
 
+        // get product by id 
+        app.get('/drones/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) }
+            const cursor = await dronesCollection.findOne(query);
+            res.json(cursor)
+        });
+
         // drones get api for home section here using limit
         app.get('/drones-home', async (req, res) => {
             const cursor = dronesCollection.find({}).limit(6);
