@@ -23,6 +23,7 @@ async function run() {
         const dronesCollection = dronesNetwork.collection('drones');
         const ordersCollection = dronesNetwork.collection('orders');
         const reviewsCollection = dronesNetwork.collection('reviews');
+        const usersColletion = dronesNetwork.collection('users');
 
         // drones get api all
         app.get('/drones', async (req, res) => {
@@ -31,12 +32,25 @@ async function run() {
             res.json(result)
         })
 
+        //drones post api here 
+        app.post('/drones', async (req, res) => {
+            const cursor = await dronesCollection.insertOne(req.body);
+            res.json(cursor)
+        })
+
         // get product by id 
         app.get('/drones/:id', async (req, res) => {
             const query = { _id: ObjectId(req.params.id) }
             const cursor = await dronesCollection.findOne(query);
             res.json(cursor)
         });
+
+        // drone delete api 
+        app.delete('/drone/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) }
+            const result = await dronesCollection.deleteOne(query);
+            res.json(result)
+        })
 
         // drones get api for home section here using limit
         app.get('/drones-home', async (req, res) => {
@@ -82,6 +96,36 @@ async function run() {
         app.get('/reviews', async (req, res) => {
             const cursor = await reviewsCollection.find({}).toArray();
             res.json(cursor);
+        })
+
+        // user api
+        app.post('/users', async (req, res) => {
+            const cursor = await usersColletion.insertOne(req.body);
+            res.json(cursor)
+        })
+
+        // users put api here 
+        app.put('/users', async (req, res) => {
+            const query = { email: req.body.email }
+            const options = { upsert: true }
+            const updateDocs = { $set: req.body }
+            const result = await usersColletion.updateOne(query, updateDocs, options)
+        })
+
+        // admin api
+        app.put('/user/admin', async (req, res) => {
+            const query = { email: req.body.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersColletion.updateOne(query, updateDoc);
+            res.json(result)
+        })
+
+        // users get api 
+        app.get('/user/:email', async (req, res) => {
+            const user = await usersColletion.findOne({ email: req.params.email });
+            let isAdmin = false;
+            if (user?.role === 'admin') { isAdmin = true }
+            res.json({ admin: isAdmin })
         })
 
     }
