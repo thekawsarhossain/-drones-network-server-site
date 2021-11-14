@@ -21,6 +21,8 @@ async function run() {
         await client.connect();
         const dronesNetwork = client.db('drones-network');
         const dronesCollection = dronesNetwork.collection('drones');
+        const ordersCollection = dronesNetwork.collection('orders');
+        const reviewsCollection = dronesNetwork.collection('reviews');
 
         // drones get api all
         app.get('/drones', async (req, res) => {
@@ -41,6 +43,45 @@ async function run() {
             const cursor = dronesCollection.find({}).limit(6);
             const result = await cursor.toArray();
             res.json(result)
+        })
+
+        // orders post api here 
+        app.post('/orders', async (req, res) => {
+            const result = await ordersCollection.insertOne(req.body);
+            res.json(result);
+        })
+
+        // order get api here 
+        app.get('/orders', async (req, res) => {
+            const cursor = ordersCollection.find({});
+            const result = await cursor.toArray();
+            res.json(result)
+        })
+
+        // getting order data by email address
+        app.get('/orders/:email', async (req, res) => {
+            const cursor = await ordersCollection.find({ email: req.params.email }).toArray();
+            res.json(cursor)
+
+        })
+
+        // delete order api
+        app.delete('/order/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) }
+            const result = ordersCollection.deleteOne(query);
+            res.json(result)
+        })
+
+        // reviews post api 
+        app.post('/reviews', async (req, res) => {
+            const cursor = await reviewsCollection.insertOne(req.body);
+            res.json(cursor);
+        })
+
+        // reviews get api
+        app.get('/reviews', async (req, res) => {
+            const cursor = await reviewsCollection.find({}).toArray();
+            res.json(cursor);
         })
 
     }
