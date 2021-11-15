@@ -65,12 +65,20 @@ async function run() {
             res.json(result);
         })
 
-        // order get api here 
+        // orders get api here 
         app.get('/orders', async (req, res) => {
             const cursor = ordersCollection.find({});
             const result = await cursor.toArray();
             res.json(result)
         })
+
+        // order put api 
+        app.put('/order/:id', async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) }
+            const updateDoc = { $set: { status: 'shipped' } }
+            const result = await ordersCollection.updateOne(filter, updateDoc);
+            res.json(result)
+        });
 
         // getting order data by email address
         app.get('/orders/:email', async (req, res) => {
