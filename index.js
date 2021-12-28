@@ -3,12 +3,13 @@ const { MongoClient } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 5000;
-
 require('dotenv').config();
 
 // stripe import here 
 const stripe = require('stripe')(process.env.STRIPE_KEY)
+
+// port here 
+const port = process.env.PORT || 5000;
 
 // using middlewere here
 app.use(express.json());
