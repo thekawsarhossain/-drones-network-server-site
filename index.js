@@ -5,6 +5,9 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 
+// stripe import here 
+const stripe = require('stripe')(process.env.STRIPE_KEY)
+
 require('dotenv').config();
 
 // using middlewere here
@@ -134,6 +137,18 @@ async function run() {
             let isAdmin = false;
             if (user?.role === 'admin') { isAdmin = true }
             res.json({ admin: isAdmin })
+        })
+
+        // stripe api here 
+        app.post('/create-payment-intent', async (req, res) => {
+            const paymentInfo = req.body;
+            const amount = paymentInfo.price * 100;
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: 'usd',
+                amount: amount,
+                payment_method_types: ['card']
+            });
+            res.json({ clientSecret: paymentIntent.client_secret })
         })
 
     }
