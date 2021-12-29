@@ -99,16 +99,15 @@ async function run() {
         })
 
         // order put api to make payment done status 
-        app.put('/order/:id', async (req, res) => {
-            const id = req.params.id;
-            const payment = req.body;
-            const query = { _id: ObjectId(id) };
+        app.put('/order-payment/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) };
+            const options = { upsert: true };
             const updateOrder = {
                 $set: {
-                    payment: payment
+                    payment: 'Paid'
                 }
             }
-            const result = await ordersCollection.updateOne(query, updateOrder)
+            const result = await ordersCollection.updateOne(query, updateOrder, options)
             res.json(result)
         })
 
