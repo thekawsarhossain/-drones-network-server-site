@@ -98,6 +98,20 @@ async function run() {
             res.json(result)
         })
 
+        // order put api to make payment done status 
+        app.put('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const query = { _id: ObjectId(id) };
+            const updateOrder = {
+                $set: {
+                    payment: payment
+                }
+            }
+            const result = await ordersCollection.updateOne(query, updateOrder)
+            res.json(result)
+        })
+
         // reviews post api 
         app.post('/reviews', async (req, res) => {
             const cursor = await reviewsCollection.insertOne(req.body);
