@@ -56,6 +56,20 @@ async function run() {
             res.json(result)
         })
 
+        // drones put api to update product 
+        app.put('/drone/:id', async (req, res) => {
+            const updateProduct = req.body;
+            const filter = { _id: ObjectId(req.params.id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    updateProduct
+                }
+            }
+            const result = await dronesCollection.updateOne(filter, updateDoc, options)
+            res.json(result)
+        })
+
         // drones get api for home section here using limit
         app.get('/drones-home', async (req, res) => {
             const cursor = dronesCollection.find({}).limit(6);
