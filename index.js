@@ -63,7 +63,7 @@ async function run() {
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
-                    updateProduct
+                    name: updateProduct.name, description: updateProduct.description, price: updateProduct.price, img: updateProduct.img,
                 }
             }
             const result = await dronesCollection.updateOne(filter, updateDoc, options)
